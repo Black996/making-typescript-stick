@@ -20,52 +20,51 @@ export type DataEntityMap = {
 export type DataEntities = keyof DataEntityMap;
 
 type DataEntityMethods = {
-  [k in keyof DataEntityMap as `get${Capitalize<k>}`]: (id:number)=>DataEntityMap[k] | undefined;
-} &  {[k in DataEntities as `getAll${Capitalize<k>}s`]: ()=>DataEntityMap[k][];} & 
-{[k in keyof DataEntityMap as `clear${Capitalize<k>}s`]: ()=>void;}
-& {[k in keyof DataEntityMap as `add${Capitalize<k>}`]: (item: DataEntityMap[k])=>DataEntityMap[k];}
+  [k in keyof DataEntityMap as `get${Capitalize<k>}`]: (id: string) => DataEntityMap[k] | undefined;
+} & { [k in DataEntities as `getAll${Capitalize<k>}s`]: () => DataEntityMap[k][]; } 
+  & { [k in keyof DataEntityMap as `clear${Capitalize<k>}s`]: () => void; }
+  & { [k in keyof DataEntityMap as `add${Capitalize<k>}`]: (item: DataEntityMap[k]) => DataEntityMap[k]; }
 
 export class DataStore implements DataEntityMethods {
-  movies:Movie[];
-  songs:Song[];
+  #ds: { [k in keyof DataEntityMap]: Record<string, DataEntityMap[k]> } =
+    {
+      song: {},
+      movie: {}
+    }
+   ; 
+   
 
-
-  constructor(){
-    this.movies = [];
-    this.songs = [];
+  getSong(id:string){
+    return this.#ds.song[id];
   }
 
-  getSong(id:number){
-    return this.songs[id];
-  }
-
-  getMovie(id:number){
-    return this.movies[id];
+  getMovie(id:string){
+    return this.#ds.movie[id];
   }
 
   getAllSongs(){
-    return this.songs;
+    return [];
   }
 
   getAllMovies(){
-    return this.movies;
+    return [];
   }
 
   addSong(item:Song){
-    this.songs.push(item);
+    // this.songs.push(item);
     return item;
   }
 
   addMovie(item:Movie){
-    this.movies.push(item);
+    // this.movies.push(item);
     return item;
   }
 
   clearMovies(){
-    this.movies = [];
+    // this.movies = [];
   }
 
   clearSongs(){
-    this.songs = [];
+    // this.songs = [];
   }
 }
