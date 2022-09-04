@@ -25,14 +25,22 @@ type DataEntityMethods = {
   & { [k in keyof DataEntityMap as `clear${Capitalize<k>}s`]: () => void; }
   & { [k in keyof DataEntityMap as `add${Capitalize<k>}`]: (item: DataEntityMap[k]) => DataEntityMap[k]; }
 
+type DataSources = { [k in keyof DataEntityMap]: Record<string, DataEntityMap[k]> };
 export class DataStore implements DataEntityMethods {
-  #ds: { [k in keyof DataEntityMap]: Record<string, DataEntityMap[k]> } =
+  #ds: DataSources =
     {
       song: {},
       movie: {}
-    }
-   ; 
-   
+    };
+
+
+  #isDefined<T>(arg: T | undefined):arg is T {
+    return typeof arg !== 'undefined';
+  }
+
+  #dataEntityMapper<T extends keyof DataSources>(dataSource:DataSources[T]){
+   return Object.keys(dataSource).map((source)=>dataSource[source]).filter(this.#isDefined);
+  }
 
   getSong(id:string){
     return this.#ds.song[id];
