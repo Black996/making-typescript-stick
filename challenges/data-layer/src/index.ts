@@ -38,7 +38,7 @@ export class DataStore implements DataEntityMethods {
     return typeof arg !== 'undefined';
   }
 
-  #dataEntityMapper<T extends keyof DataSources>(dataSource:DataSources[T]){
+  #dataEntityMapper<T extends keyof DataSources>(dataSource:DataSources[T]):DataEntityMap[T][]{
    return Object.keys(dataSource).map((source)=>dataSource[source]).filter(this.#isDefined);
   }
 
@@ -51,28 +51,28 @@ export class DataStore implements DataEntityMethods {
   }
 
   getAllSongs(){
-    return [];
+    return this.#dataEntityMapper<'song'>(this.#ds.song);
   }
 
   getAllMovies(){
-    return [];
+    return this.#dataEntityMapper<'movie'>(this.#ds.movie);
   }
 
   addSong(item:Song){
-    // this.songs.push(item);
+    this.#ds.song[item.id] = item;
     return item;
   }
 
   addMovie(item:Movie){
-    // this.movies.push(item);
+    this.#ds.movie[item.id] = item;
     return item;
   }
 
   clearMovies(){
-    // this.movies = [];
+    this.#ds.movie = {};
   }
 
   clearSongs(){
-    // this.songs = [];
+    this.#ds.song = {};
   }
 }
